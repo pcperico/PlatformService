@@ -1,0 +1,14 @@
+bin
+packages
+obj
+*.suo
+*.user
+Package
+PlatformService/.vs/config/applicationhost.config
+PlatformService/.vs/PlatformService/v15/Server/sqlite3
+PlatformService/.vs/PlatformService/v16/Server/sqlite3
+PlatformService/.vs/PlatformService/config/applicationhost.config
+PlatformService/.vs/PlatformService/DesignTimeBuild/.dtbcache.v2
+.vs/PlatformService/config/applicationhost.config
+.vs/PlatformService/DesignTimeBuild/.dtbcache.v2
+/PlatformService.WebApplication/Properties/PublishProfiles/stageharestech - Web Deploy.pubxml
