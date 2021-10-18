@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PlatformService.Data.Repositories.Interfaces;
 using PlatformService.Dtos;
+using System.Collections.Generic;
+using PlatformService.Models;
 
 namespace PlatformService.Controllers
 {
@@ -29,6 +28,31 @@ namespace PlatformService.Controllers
             return Ok(model);
         }
 
-        
+        [HttpGet]
+        [Route("GetPlatformById")]
+        public ActionResult<PlatformReadDto> GetPlatformById(int id)
+        {
+            var platform = _platformRepository.GetPlatformById(id);
+            if (platform == null)
+                return NotFound();
+            return Ok(_mapper.Map<PlatformReadDto>(platform));
+        }
+
+        [HttpPost]
+        public ActionResult<PlatformReadDto> CreatePlatform(PlatformCreateDto platformCreateDto)
+        {
+            var platform = _mapper.Map<Platform>(platformCreateDto);
+           _platformRepository.CreatePlatform(platform);
+           return _mapper.Map<PlatformReadDto>(platform);
+        }
+
+        [HttpDelete]
+        public ActionResult DeletePlatform(int id)
+        {
+            _platformRepository.DeletePlatform(id);
+            return Ok();
+        }
+
+
     }
 }
