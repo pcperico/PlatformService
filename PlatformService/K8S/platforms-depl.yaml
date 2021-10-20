@@ -1,0 +1,17 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: platforms-depl
+spec:
+ replicas: 1
+ selector:
+  matchLabels:
+   app: plaformservice
+ template:
+  metadata:
+   labels:
+    app: plaformservice
+  spec:
+   containers:
+    - name: plaformservice
+      image: pcperico1333/platformservice:latest
