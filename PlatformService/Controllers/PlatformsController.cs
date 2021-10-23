@@ -4,6 +4,9 @@ using PlatformService.Data.Repositories.Interfaces;
 using PlatformService.Dtos;
 using System.Collections.Generic;
 using PlatformService.Models;
+using PlatformService.SyncDataServices.Http;
+using System;
+using System.Threading.Tasks;
 
 namespace PlatformService.Controllers
 {
@@ -13,11 +16,13 @@ namespace PlatformService.Controllers
     {
         private readonly IPlatformRepository _platformRepository;
         private readonly IMapper _mapper;
+        private readonly ICommandDataClient _commandDataClient;
 
-        public PlatformsController(IPlatformRepository platformRepository,IMapper mapper)
+        public PlatformsController(IPlatformRepository platformRepository,IMapper mapper,ICommandDataClient commandDataClient)
         {
             _platformRepository = platformRepository;
             _mapper = mapper;
+            _commandDataClient = commandDataClient;
         }
 
         [HttpGet]
@@ -39,10 +44,18 @@ namespace PlatformService.Controllers
         }
 
         [HttpPost]
-        public ActionResult<PlatformReadDto> CreatePlatform(PlatformCreateDto platformCreateDto)
+        public async Task<PlatformReadDto> CreatePlatform(PlatformCreateDto platformCreateDto)
         {
             var platform = _mapper.Map<Platform>(platformCreateDto);
            _platformRepository.CreatePlatform(platform);
+            var platformReadDto = _mapper.Map<PlatformReadDto>(platform);
+           try{
+                await _commandDataClient.SendPlatformToCommand(platformReadDto);
+           }
+           catch(Exception ex)
+           {
+                Console.WriteLine($"--> Could not sent sync: {ex.Message}");
+           }
            return _mapper.Map<PlatformReadDto>(platform);
         }
 
