@@ -1,31 +1,31 @@
 ﻿apiVersion: apps/v1
 kind: Deployment
 metadata:
- name: platforms-depl
+ name: commands-depl
 spec:
  replicas: 1
  selector:
   matchLabels:
-   app: plaformservice
+   app: commandservice
  template:
   metadata:
    labels:
-    app: plaformservice
+    app: commandservice
   spec:
    containers:
-    - name: plaformservice
-      image: pcperico1333/platformservice:latest
+    - name: commandservice
+      image: pcperico1333/commandsservice:latest
 ---
 apiVersion: v1
 kind: Service
 metadata:
- name: platforms-clusterip-srv
+ name: commands-clusterip-srv
 spec:
  type: ClusterIP
  selector:
-  app: plaformservice
+  app: commandservice
  ports:
-  - name: plaformservice
+  - name: commandservice
     protocol: TCP
     port: 80
     targetPort: 80
