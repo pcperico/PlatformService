@@ -7,6 +7,7 @@ using PlatformService.Models;
 using PlatformService.SyncDataServices.Http;
 using System;
 using System.Threading.Tasks;
+using PlatformService.AsyncDataServices;
 
 namespace PlatformService.Controllers
 {
@@ -14,12 +15,14 @@ namespace PlatformService.Controllers
     [ApiController]
     public class PlatformsController : ControllerBase
     {
+        private readonly IMessageBusClient _busClient;
         private readonly IPlatformRepository _platformRepository;
         private readonly IMapper _mapper;
         private readonly ICommandDataClient _commandDataClient;
 
-        public PlatformsController(IPlatformRepository platformRepository,IMapper mapper,ICommandDataClient commandDataClient)
+        public PlatformsController(IMessageBusClient busClient, IPlatformRepository platformRepository,IMapper mapper,ICommandDataClient commandDataClient)
         {
+            _busClient = busClient;
             _platformRepository = platformRepository;
             _mapper = mapper;
             _commandDataClient = commandDataClient;
@@ -49,13 +52,25 @@ namespace PlatformService.Controllers
             var platform = _mapper.Map<Platform>(platformCreateDto);
            _platformRepository.CreatePlatform(platform);
             var platformReadDto = _mapper.Map<PlatformReadDto>(platform);
-           try{
+           try
+           {
                 await _commandDataClient.SendPlatformToCommand(platformReadDto);
            }
            catch(Exception ex)
            {
                 Console.WriteLine($"--> Could not sent sync: {ex.Message}");
            }
+
+            try 
+            {
+                var platformPublisedDto = _mapper.Map<PlatformPublishedDto>(platformReadDto);
+                platformPublisedDto.Event = "Plaform_Published";
+                _busClient.PublishNewPlatform(platformPublisedDto);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"--> Could not sent async: {ex.Message}");
+            }
            return _mapper.Map<PlatformReadDto>(platform);
         }
 
