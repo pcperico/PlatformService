@@ -64,14 +64,14 @@ namespace PlatformService.Controllers
             try 
             {
                 var platformPublisedDto = _mapper.Map<PlatformPublishedDto>(platformReadDto);
-                platformPublisedDto.Event = "Plaform_Published";
+                platformPublisedDto.Event = "Platform_Published";
                 _busClient.PublishNewPlatform(platformPublisedDto);
             }
             catch(Exception ex)
             {
                 Console.WriteLine($"--> Could not sent async: {ex.Message}");
             }
-           return _mapper.Map<PlatformReadDto>(platform);
+            return _mapper.Map<PlatformReadDto>(platform);
         }
 
         [HttpDelete]

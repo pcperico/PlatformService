@@ -7,6 +7,6 @@ namespace CommandsService.Dtos
         [Required]
         public string HowTo { get; set; }
         [Required]
-        public string CommanLine { get; set; }       
+        public string CommandLine { get; set; }       
     }
 }

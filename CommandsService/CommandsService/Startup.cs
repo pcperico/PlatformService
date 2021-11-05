@@ -1,6 +1,8 @@
+using CommandsService.AsyncDataServices;
 using CommandsService.Data;
 using CommandsService.Data.Repositories.Impl;
 using CommandsService.Data.Repositories.Interfaces;
+using CommandsService.EventProcessing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,7 +36,8 @@ namespace CommandsService
             services.AddScoped<ICommandRepository, CommandRepository>();
             services.AddControllers();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+            services.AddHostedService<MessageBusSubscriber>();
+            services.AddSingleton<IEventProcessor, EventProcessor>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CommandsService", Version = "v1" });

@@ -26,8 +26,12 @@ namespace PlatformService.Data.Repositories.Impl
         public void DeletePlatform(int id)
         {
             var platform = GetPlatformById(id);
-            if(platform!=null)
+            if (platform != null)
+            {
                 _context.Platforms.Remove(platform);
+                _context.SaveChanges();
+            }
+              
         }
 
         public IEnumerable<Platform> GetAllPlatforms()
